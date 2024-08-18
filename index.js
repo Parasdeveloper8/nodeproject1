@@ -3,16 +3,17 @@ const app = express();
 const port = process.env.PORT || 20101; // Fix: Use process.env.PORT for environment-specific port
 const jwt = require('jsonwebtoken');
 const bcrypt= require('bcryptjs');
+const dotenv = require('dotenv').config();
 // Set up database connection
 
 
 const { createPool } = require("mysql2");
 const pool = createPool({
-    host: "localhost",
-    user: "root",
-    password: "8890Aaaa@",
-    database: "jwt_auth_db",
-    connectionLimit: 30
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    connectionLimit: process.env.DB_CONNECTION_LIMIT
 });
 
 // Set up templating engine
@@ -87,32 +88,7 @@ app.post('/login', async (req, res)=> {
   app.get("/loginpage",(req,res)=>{
     res.render("login");
   });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 app.listen(port, () => {
     console.log(`App is listening on port ${port}`);
 });
