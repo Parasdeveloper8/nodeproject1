@@ -4,6 +4,8 @@ const port = process.env.PORT || 20101; // Fix: Use process.env.PORT for environ
 const jwt = require('jsonwebtoken');
 const bcrypt= require('bcryptjs');
 const dotenv = require('dotenv').config();
+const shortid= require('shortid'); 
+const session = require('express-session');
 // Set up database connection
 
 
@@ -25,23 +27,30 @@ app.use(express.static('public'));
 app.use(express.urlencoded({ extended: false }));
 
 
-const secretKey = 'parasdeveloper8';
+const secretKey = process.env.SECRET_KEY;
+app.use(session({
+  secret: process.env.SECRET_KEY,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } // Set to true if using HTTPS
+}));
 // Routes
 app.get('/', (req, res) => {
-    res.render("index");
+  const username = req.session.username;
+  res.render('index', { username });
 });
 app.post('/register',(req,res)=>{
     const {username , password} = req.body;
     bcrypt.hash(password,10,(err,hashedPassword)=>{
         if(err){
-            return res.status(500).json({message:'Error hashing password'});
+            return res.status(500).send('Error hashing password');
         }
         const sql = 'insert into jwt_auth_db.users(username,password) values(?,?)';
         pool.query(sql , [username,hashedPassword],(err,result)=>{
             if(err){
-                return res.status(500).json({message:'database error' , error:err});
+                return res.status(500).send(`database error${err}`);
             }
-            res.status(201).json({message:'user registered successfully'});
+            res.status(201).render("onsuccessregistration");
         });
     });
 });
@@ -59,10 +68,18 @@ app.post('/login', async (req, res)=> {
   
       const token = jwt.sign({ id: user.id }, secretKey, { expiresIn: 86400 }); // 24 hours
   
-      res.status(200).send({ auth: true, token: token });
+       // Store username and token in the session
+       req.session.username = user.username;
+       req.session.token = token;
+      res.redirect('/');
     });
   });
-  
+  app.get('/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) return res.status(500).send('Error logging out.');
+        res.redirect('/');
+    });
+});
   // Middleware to verify the token
   function verifyToken(req, res, next) {
     const token = req.headers['x-access-token'];
@@ -90,6 +107,43 @@ app.post('/login', async (req, res)=> {
     res.render("login");
   });
  
+ app.post('/shortener',(req,res)=>{
+  let longUrl = req.body.url;
+  let shortUrl = shortid.generate(longUrl);
+  res.render("shorturl",{shortUrl});
+  const userName = req.session.username;
+  console.log(longUrl,shortUrl);
+  pool.query("insert into jwt_auth_db.users(username,originalurl,shorturl) values(?,?,?)", [userName,longUrl,shortUrl],(err,users)=>{
+     if(err) return console.log(err);
+     if(users) return console.log("successfully saved to the database");
+  });
+ });
+
+ app.get('/geturl', (req, res) => {
+  const username = req.session.username;
+
+  if (!username) {
+    return res.status(401).json({ error: 'Unauthorized access' });
+  }
+
+  pool.query("SELECT * FROM jwt_auth_db.users WHERE username = ? AND originalurl IS NOT NULL", [username], (err, results) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    const user = results;
+    
+    res.json({ ndata: user });
+    
+  });
+});
+
+
 app.listen(port, () => {
     console.log(`App is listening on port ${port}`);
 });

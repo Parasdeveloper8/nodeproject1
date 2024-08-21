@@ -1,18 +1,44 @@
 <!DOCTYPE html>
 <html>
     <head>
-  <meta name="viewport" content="width=device-width,initial scale=1.0">
+  <meta name="viewport" content="width=device-width,Initial scale=1.0">
   <link rel="stylesheet" href="style.css" type="text/css">
     </head>
     <body>
       <header>
         <div id="profile">
-          <a href="/profile"><p>Profile</p></a>
+          <a href="/profile" id="a"><p>Profile</p></a>
+          <% if (username) { %>
+            <h1>Welcome, <%= username %>!</h1>
+        <% } else { %>
+            <h1>Welcome to the Home Page!</h1>
+        <% } %>
         </div>
+        <form method="get" action="/logout">
+          <input type="submit" value="logout">
+        </form>
       </header>
       <main>
-        <button type="button">fy</button>
+        <form action="/shortener" method="post">
+          <input type="text" name="url">
+          <button onclick="getNew()">Convert</button>
+        </form>
       </main>
       <footer></footer>
+      <script>
+      document.addEventListener("DOMContentLoaded", () => {
+  fetch("http://localhost:20101/geturl")
+    .then(response => response.json())
+    .then(data => {
+      for (let x = 0; x < data.urls.length; x++) {
+    let originalUrl = data.urls[x].originalurl;
+    const p = document.createElement("p");
+    p.textContent = JSON.stringify(originalUrl);
+    document.body.appendChild(p);
+}
+    })
+    .catch(error => console.log(error));
+  })
+      </script>
     </body>
 </html>
