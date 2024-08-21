@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const port = process.env.PORT || 20101; // Fix: Use process.env.PORT for environment-specific port
+const port = process.env.PORT || 3700; // Fix: Use process.env.PORT for environment-specific port
 const jwt = require('jsonwebtoken');
 const bcrypt= require('bcryptjs');
 const dotenv = require('dotenv').config();
@@ -138,7 +138,7 @@ app.post('/login', async (req, res)=> {
     
     const user = results;
     
-    res.json({ ndata: user });
+    res.json(user);
     
   });
 });

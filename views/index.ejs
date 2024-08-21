@@ -9,32 +9,42 @@
         <div id="profile">
           <a href="/profile" id="a"><p>Profile</p></a>
           <% if (username) { %>
-            <h1>Welcome, <%= username %>!</h1>
+            <h1 class="welcome">Welcome, <%= username %>!</h1>
         <% } else { %>
-            <h1>Welcome to the Home Page!</h1>
+            <h1 class="homepage-welcome">Welcome to the Home Page!</h1>
         <% } %>
         </div>
         <form method="get" action="/logout">
-          <input type="submit" value="logout">
+          <input type="submit" value="logout" id="logout">
         </form>
       </header>
+      <hr>
       <main>
-        <form action="/shortener" method="post">
-          <input type="text" name="url">
+        <form action="/shortener" method="post" class="input-form">
+          <input type="text" name="url" placeholder="Enter link">
           <button onclick="getNew()">Convert</button>
         </form>
       </main>
-      <footer></footer>
+      <footer>
+      </footer>
       <script>
       document.addEventListener("DOMContentLoaded", () => {
-  fetch("http://localhost:20101/geturl")
+  fetch("http://localhost:3700/geturl")
     .then(response => response.json())
     .then(data => {
-      for (let x = 0; x < data.urls.length; x++) {
-    let originalUrl = data.urls[x].originalurl;
+      for (let x = 0; x < data.length; x++) {
+    let originalUrl = data[x].originalurl;
+    let shortUrl = data[x].shorturl;
+    let combinedurl = `original url: ${originalUrl} short url: ${shortUrl}`;
+    const div = document.createElement("div");
     const p = document.createElement("p");
-    p.textContent = JSON.stringify(originalUrl);
-    document.body.appendChild(p);
+    p.textContent = JSON.stringify(combinedurl);
+    div.appendChild(p);
+    document.body.append(div);
+    div.style.border = "2px solid black";
+    div.style.marginTop = "5vh";
+    div.style.color = "red";
+
 }
     })
     .catch(error => console.log(error));
