@@ -38,7 +38,7 @@ app.use(session({
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-      cb(null, 'uploads/'); // Directory to save the files
+      cb(null, process.env.UPLOAD_FOLDER); // Directory to save the files
   },
   filename: (req, file, cb) => {
       // Generate a unique filename
@@ -51,7 +51,7 @@ const upload = multer({ storage: storage });
 app.post("/postyourblogs",upload.single('photo'),(req,res)=>{
   const title = req.body.text;
   const user = req.session.username;
-  const photo_url = req.file ? `/uploads/${req.file.filename}` : null;
+  const photo_url = req.file ? `${process.env.UPLOAD_FOLDER}/${req.file.filename}` : null;
   pool.query("insert into jwt_auth_db.posts(user,posturl,title) values(?,?,?)",[user,photo_url,title],(err,result)=>{
     if(err){
     console.log(err);
