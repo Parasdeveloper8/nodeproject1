@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-  <meta name="viewport" content="width=device-width,Initial scale=1.0">
+  <meta name="viewport" content="width=device-width,initial scale=1.0">
   <link rel="stylesheet" href="style.css" type="text/css">
     </head>
     <body>
@@ -17,38 +17,15 @@
         <form method="get" action="/logout">
           <input type="submit" value="logout" id="logout">
         </form>
+        <a href="./blogpost.ejs"></a>
       </header>
       <hr>
       <main>
-        <form action="/shortener" method="post" class="input-form">
-          <input type="text" name="url" placeholder="Enter link">
-          <button onclick="getNew()">Convert</button>
-        </form>
+        
+        
       </main>
       <footer>
       </footer>
-      <script>
-      document.addEventListener("DOMContentLoaded", () => {
-  fetch("http://localhost:3700/geturl")
-    .then(response => response.json())
-    .then(data => {
-      for (let x = 0; x < data.length; x++) {
-    let originalUrl = data[x].originalurl;
-    let shortUrl = data[x].shorturl;
-    let combinedurl = `original url: ${originalUrl} short url: ${shortUrl}`;
-    const div = document.createElement("div");
-    const p = document.createElement("p");
-    p.textContent = JSON.stringify(combinedurl);
-    div.appendChild(p);
-    document.body.append(div);
-    div.style.border = "2px solid black";
-    div.style.marginTop = "5vh";
-    div.style.color = "red";
-
-}
-    })
-    .catch(error => console.log(error));
-  })
-      </script>
+ 
     </body>
 </html>

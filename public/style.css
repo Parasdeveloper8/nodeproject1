@@ -29,9 +29,11 @@ body{
 }
 .input-form  >button{
     margin-top: 5vh;
-    width:10vw;
-    height:10vh;
     margin-left: auto;
+    padding-top:2.5vh;
+    padding-bottom:2.5vh;
+    padding-left:2.5vw;
+    padding-right:2.5vw;
     margin-right: auto;
 }
 #a{
@@ -47,4 +49,9 @@ body{
     position:fixed;
     left:90vw;
     top:20vh;
+}
+div{
+    display:flex;
+    flex-direction:column;
+    border:1px solid black;
 }

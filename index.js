@@ -1,10 +1,9 @@
 const express = require("express");
 const app = express();
-const port = process.env.PORT || 3700; // Fix: Use process.env.PORT for environment-specific port
+const port = process.env.PORT || 3700; 
 const jwt = require('jsonwebtoken');
 const bcrypt= require('bcryptjs');
 const dotenv = require('dotenv').config();
-const shortid= require('shortid'); 
 const session = require('express-session');
 // Set up database connection
 
@@ -65,7 +64,6 @@ app.post('/login', async (req, res)=> {
   
       const passwordIsValid = await bcrypt.compare(password, user.password);
       if (!passwordIsValid) return res.status(401).send({ auth: false, token: null });
-  
       const token = jwt.sign({ id: user.id }, secretKey, { expiresIn: 86400 }); // 24 hours
   
        // Store username and token in the session
@@ -107,42 +105,6 @@ app.post('/login', async (req, res)=> {
     res.render("login");
   });
  
- app.post('/shortener',(req,res)=>{
-  let longUrl = req.body.url;
-  let shortUrl = shortid.generate(longUrl);
-  res.render("shorturl",{shortUrl});
-  const userName = req.session.username;
-  console.log(longUrl,shortUrl);
-  pool.query("insert into jwt_auth_db.users(username,originalurl,shorturl) values(?,?,?)", [userName,longUrl,shortUrl],(err,users)=>{
-     if(err) return console.log(err);
-     if(users) return console.log("successfully saved to the database");
-  });
- });
-
- app.get('/geturl', (req, res) => {
-  const username = req.session.username;
-
-  if (!username) {
-    return res.status(401).json({ error: 'Unauthorized access' });
-  }
-
-  pool.query("SELECT * FROM jwt_auth_db.users WHERE username = ? AND originalurl IS NOT NULL", [username], (err, results) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ error: 'Internal server error' });
-    }
-
-    if (results.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-    
-    const user = results;
-    
-    res.json(user);
-    
-  });
-});
-
 
 app.listen(port, () => {
     console.log(`App is listening on port ${port}`);
