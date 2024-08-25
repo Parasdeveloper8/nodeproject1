@@ -14,15 +14,19 @@
             <h1 class="homepage-welcome">Welcome to the Home Page!</h1>
         <% } %>
         </div>
-        <form method="get" action="/logout">
-          <input type="submit" value="logout" id="logout">
-        </form>
-        <a href="./blogpost.ejs"></a>
       </header>
-      <hr>
       <main>
-        
-        
+        <div class="post-div">
+
+        </div>
+        <div class="opt-cont">
+          <form action="/blogpostpage" method="get">
+            <input type="submit" value="+" id="post">
+          </form>
+          <form method="get" action="/logout">
+            <input type="submit" value="logout" id="logout">
+          </form>
+        </div>
       </main>
       <footer>
       </footer>

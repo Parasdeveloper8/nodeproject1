@@ -1,14 +1,15 @@
 const express = require("express");
 const app = express();
-const port = process.env.PORT || 3700; 
+const port = process.env.PORT || 4000; 
 const jwt = require('jsonwebtoken');
 const bcrypt= require('bcryptjs');
 const dotenv = require('dotenv').config();
 const session = require('express-session');
-// Set up database connection
-
+const multer = require('multer');
+const path = require('path');
 
 const { createPool } = require("mysql2");
+
 const pool = createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -23,8 +24,9 @@ app.set("views", "./views");
 
 app.use(express.static('public'));
 
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 
+app.use(express.json());
 
 const secretKey = process.env.SECRET_KEY;
 app.use(session({
@@ -33,7 +35,34 @@ app.use(session({
   saveUninitialized: true,
   cookie: { secure: false } // Set to true if using HTTPS
 }));
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+      cb(null, 'uploads/'); // Directory to save the files
+  },
+  filename: (req, file, cb) => {
+      // Generate a unique filename
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+const upload = multer({ storage: storage });
 // Routes
+app.post("/postyourblogs",upload.single('photo'),(req,res)=>{
+  const title = req.body.text;
+  const user = req.session.username;
+  const photo_url = req.file ? `/uploads/${req.file.filename}` : null;
+  pool.query("insert into jwt_auth_db.posts(user,posturl,title) values(?,?,?)",[user,photo_url,title],(err,result)=>{
+    if(err){
+    console.log(err);
+    res.send("failed to post",err);
+  }
+  else{
+    res.send("successfully posted");
+    }
+  })
+ }); 
+
 app.get('/', (req, res) => {
   const username = req.session.username;
   res.render('index', { username });
@@ -104,7 +133,9 @@ app.post('/login', async (req, res)=> {
   app.get("/loginpage",(req,res)=>{
     res.render("login");
   });
- 
+ app.get("/blogpostpage",(req,res)=>{
+  res.render("blogpost");
+ });
 
 app.listen(port, () => {
     console.log(`App is listening on port ${port}`);

@@ -4,9 +4,9 @@
   <title>POST Blogs</title>
     </head>
     <body>
-  <form action="/postblog">
+  <form action="/postyourblogs" method="post" enctype="multipart/form-data">
     <div class="blog">
-    <input type="file" name="file">
+      <input type="file" name="photo" accept="image/*">
     <input type="text" name="text" id="title">
     </div>
     <input type="submit" value="Post">
