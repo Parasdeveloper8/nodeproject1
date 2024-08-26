@@ -16,20 +16,41 @@
         </div>
       </header>
       <main>
-        <div class="post-div">
-
+        <div id="post-div">
+      
         </div>
         <div class="opt-cont">
           <form action="/blogpostpage" method="get">
             <input type="submit" value="+" id="post">
           </form>
-          <form method="get" action="/logout">
+          <form method="post" action="/logout">
             <input type="submit" value="logout" id="logout">
           </form>
         </div>
       </main>
       <footer>
       </footer>
- 
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+  fetch('http://localhost:4100/getblogs')
+    .then(response => response.json())
+    .then(data => {
+      for (let i = 0; i < data.length; i++) {
+        const title = data[i].title;
+        const photoUrl = data[i].posturl;
+
+        const div = document.getElementById("post-div");
+        const img = document.createElement("img");
+        img.src = `.${photoUrl}`; 
+        img.alt = title; 
+        img.style.width = "200px";
+        img.style.height = "200px";
+        div.appendChild(img); 
+      }
+    })
+    .catch(error => console.log(error));
+});
+
+  </script>
     </body>
 </html>
