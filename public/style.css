@@ -4,6 +4,7 @@ body{
     margin:0;
     overflow-x: hidden;
 }
+
 .opt-cont{
     background-color: antiquewhite;
     border-radius: 10px;
@@ -15,8 +16,8 @@ body{
 }
 main{
     width:100vw;
-    display:grid;
-    grid-template-rows: 1fr 1fr;
+    display:flex;
+    justify-content: center;
 }
 .opt-cont > form{
     margin-left: auto;
@@ -24,10 +25,14 @@ main{
     margin-top:1vh;
     margin-bottom: 1vh;
 }
-.post-div{
+figure{
+    border: 1px solid black;
+}
+figcaption{
     border:1px solid black;
-    margin-left: 3vw;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    margin-right: 26vw;
+    font-family: system-ui;
+    font-size:1.5rem;
+}
+img{
+    object-fit:cover ;
 }

@@ -14,10 +14,10 @@
             <h1 class="homepage-welcome">Welcome to the Home Page!</h1>
         <% } %>
         </div>
+        <a href="/mypost">My Post</a>
       </header>
       <main>
         <div id="post-div">
-      
         </div>
         <div class="opt-cont">
           <form action="/blogpostpage" method="get">
@@ -36,16 +36,24 @@
     .then(response => response.json())
     .then(data => {
       for (let i = 0; i < data.length; i++) {
+        const user = data[i].user;
+        const h3 = document.createElement("h3");
+        h3.textContent = user;
         const title = data[i].title;
         const photoUrl = data[i].posturl;
-
+        const figure = document.createElement("figure");
+        const figcaption = document.createElement("figcaption");
         const div = document.getElementById("post-div");
         const img = document.createElement("img");
         img.src = `.${photoUrl}`; 
-        img.alt = title; 
-        img.style.width = "200px";
-        img.style.height = "200px";
-        div.appendChild(img); 
+        img.style.width = '300px';
+        figcaption.textContent = title; 
+        figure.appendChild(h3);
+        figure.appendChild(img);
+        figure.appendChild(figcaption);
+        div.appendChild( figure);
+        figure.style.width = img.style.width;
+        figure.style.height = img.style.height;
       }
     })
     .catch(error => console.log(error));

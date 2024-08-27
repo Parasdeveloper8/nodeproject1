@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Your posts</title>
+    </head>
+    <body>
+      <h1>My posts</h1>
+  <script>
+    document.addEventListener("DOMContentLoaded",()=>{
+      fetch("http://localhost:4100/getyourBlogs")
+      .then(response =>response.json())
+      .then(data =>{
+        for(let v=0;v < data.length;v++){
+          const user = data[v].user;
+          const title = data[v].title;
+          const photoUrl = data[v].posturl;
+          const figure = document.createElement("figure");
+          const figcaption = document.createElement("figcaption");
+          const img = document.createElement("img");
+          img.src = `.${photoUrl}`; 
+          img.style.width = '300px';
+          figcaption.textContent = title; 
+          figure.appendChild(img);
+          figure.appendChild(figcaption);
+          document.body.appendChild( figure);
+          figure.style.width = img.style.width;
+          figure.style.height = img.style.height;
+        }
+      })
+      .catch(error =>console.log(error));
+    });
+  </script>
+    </body>
+</html>
