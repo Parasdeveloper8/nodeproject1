@@ -6,7 +6,7 @@ const session = require('express-session');
 
 const path = require('path');
 
-const port = process.env.PORT || 4100; 
+const port = process.env.PORT || 4800; 
 
 const dotenv = require('dotenv').config();
 
@@ -35,6 +35,8 @@ const protected = require("./Routes/protected");
 const getBlogs = require("./Routes/getblogsapi");
 
 const getmyblogs = require("./Routes/getyourblogsapi");
+
+const deletepost = require('./Routes/deletepost');
 
 app.set("view engine", "ejs");
 app.set("views", "./views");
@@ -80,6 +82,8 @@ app.use("/getblogs",getBlogs);
 app.use("/mypost",mypostpage);
 
 app.use("/getyourBlogs",getmyblogs);
+
+app.use('/delete/:id',deletepost);
 
 app.listen(port, () => {
     console.log(`App is listening on port ${port}`);

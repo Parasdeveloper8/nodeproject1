@@ -1,64 +1,68 @@
 <!DOCTYPE html>
 <html>
     <head>
-  <meta name="viewport" content="width=device-width,initial scale=1.0">
-  <link rel="stylesheet" href="style.css" type="text/css">
+        <meta name="viewport" content="width=device-width,initial scale=1.0">
+        <link rel="stylesheet" href="style.css" type="text/css">
     </head>
     <body>
-      <header>
-        <div id="profile">
-          <a href="/profile" id="a"><p>Profile</p></a>
-          <% if (username) { %>
-            <h1 class="welcome">Welcome, <%= username %>!</h1>
-        <% } else { %>
-            <h1 class="homepage-welcome">Welcome to the Home Page!</h1>
-        <% } %>
-        </div>
-        <a href="/mypost">My Post</a>
-      </header>
-      <main>
-        <div id="post-div">
-        </div>
-        <div class="opt-cont">
-          <form action="/blogpostpage" method="get">
-            <input type="submit" value="+" id="post">
-          </form>
-          <form method="post" action="/logout">
-            <input type="submit" value="logout" id="logout">
-          </form>
-        </div>
-      </main>
-      <footer>
-      </footer>
-  <script>
-  document.addEventListener("DOMContentLoaded", () => {
-  fetch('http://localhost:4100/getblogs')
-    .then(response => response.json())
-    .then(data => {
-      for (let i = 0; i < data.length; i++) {
-        const user = data[i].user;
-        const h3 = document.createElement("h3");
-        h3.textContent = user;
-        const title = data[i].title;
-        const photoUrl = data[i].posturl;
-        const figure = document.createElement("figure");
-        const figcaption = document.createElement("figcaption");
-        const div = document.getElementById("post-div");
-        const img = document.createElement("img");
-        img.src = `.${photoUrl}`; 
-        img.style.width = '300px';
-        figcaption.textContent = title; 
-        figure.appendChild(h3);
-        figure.appendChild(img);
-        figure.appendChild(figcaption);
-        div.appendChild( figure);
-        figure.style.width = img.style.width;
-        figure.style.height = img.style.height;
-      }
-    })
-    .catch(error => console.log(error));
-});
+        <header>
+            <div id="profile">
+                <% if (username) { %>
+                    <h1 class="welcome"><%= username %>!</h1>
+                <% } else { %>
+                    <h1 class="homepage-welcome">Welcome to the Home Page!</h1>
+                <% } %>
+            </div>
+            <div class="opt-cont2">
+            <a href="/profile" id="a"><p>Profile</p></a>
+            <a href="/mypost">My Post</a>
+            </div>
+            <div class="opt-cont">
+                <form action="/blogpostpage" method="get">
+                    <input type="submit" value="+" id="post">
+                </form>
+                <form method="post" action="/logout">
+                    <input type="submit" value="logout" id="logout">
+                </form>
+            </div>
+        </header>
+        <main>
+            <div id="post-div">
+            </div>
+        </main>
+        <footer>
+            <p>Crafted by paras</p>
+        </footer>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                fetch('http://localhost:4800/getblogs')
+                    .then(response => response.json())
+                    .then(data => {
+                        for (let i = 0; i < data.length; i++) {
+                            const postId = data[i].id; // Assuming each blog has a unique ID
+                            const user = data[i].user;
+                            const h3 = document.createElement("h3");
+                            h3.textContent = user;
+                            const title = data[i].title;
+                            const photoUrl = data[i].posturl;
+                            const figure = document.createElement("figure");
+                            const figcaption = document.createElement("figcaption");
+                            const div = document.getElementById("post-div");
+                            const img = document.createElement("img");
+                            const button = document.createElement("button");
+                            img.src = `.${photoUrl}`; 
+                            img.style.width = "500px";
+                            figcaption.textContent = title; 
+                            figure.appendChild(h3);
+                            figure.appendChild(img);
+                            figure.appendChild(figcaption);
+                            div.appendChild(figure);
+                            figure.style.width = img.style.width;
+                        }
+                    })
+                    .catch(error => console.log(error));
+            });
 
-  </script>
+        </script>
     </body>
 </html>
